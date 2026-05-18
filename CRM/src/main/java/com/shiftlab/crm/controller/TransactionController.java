@@ -2,6 +2,7 @@ package com.shiftlab.crm.controller;
 
 import com.shiftlab.crm.PaymentType;
 import com.shiftlab.crm.Transaction;
+import com.shiftlab.crm.dto.PrimePeriodDto;
 import com.shiftlab.crm.dto.TransactionCreateDto;
 import com.shiftlab.crm.service.TransactionService;
 import org.springframework.web.bind.annotation.*;
@@ -35,4 +36,8 @@ public class TransactionController {
         return transactionService.getTransactionById(transactionId);
     }
 
+    @GetMapping("/prime-period/{sellerId}")
+    PrimePeriodDto getPrimePeriodById(@PathVariable Long sellerId) {
+        return null;
+    }
 }
