@@ -1,5 +1,6 @@
 package com.shiftlab.crm.controller;
 
+import com.shiftlab.crm.PaymentType;
 import com.shiftlab.crm.Transaction;
 import com.shiftlab.crm.dto.TransactionCreateDto;
 import com.shiftlab.crm.service.TransactionService;
@@ -22,8 +23,11 @@ public class TransactionController {
     }
 
     @GetMapping
-    public List<Transaction> getAllTransactions() {
-        return transactionService.getAllTransactions();
+    public List<Transaction> getAllTransactions(
+            @RequestParam(name = "sellerId",  required = false) Long sellerId,
+            @RequestParam(name = "paymentType", required = false) PaymentType paymentType
+    ) {
+        return transactionService.getTransactions(sellerId, paymentType);
     }
 
     @GetMapping("/{transactionId}")

@@ -1,5 +1,6 @@
 package com.shiftlab.crm.service;
 
+import com.shiftlab.crm.PaymentType;
 import com.shiftlab.crm.Seller;
 import com.shiftlab.crm.Transaction;
 import com.shiftlab.crm.dto.TransactionCreateDto;
@@ -39,4 +40,9 @@ public class TransactionService {
                 ()-> new RuntimeException("Transaction " + id + " is not found")
         );
     }
+
+    public List<Transaction> getTransactions(Long sellerId, PaymentType paymentType) {
+        return transactionRepository.findByFilters(sellerId, paymentType);
+    }
+
 }

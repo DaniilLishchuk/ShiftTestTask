@@ -1,10 +1,12 @@
 package com.shiftlab.crm.service;
 
 import com.shiftlab.crm.Seller;
+import com.shiftlab.crm.dto.SellerAnalyticsDto;
 import com.shiftlab.crm.dto.SellerCreateDto;
 import com.shiftlab.crm.repository.SellerRepository;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -31,5 +33,9 @@ public class SellerService {
         return sellerRepository.findById(id).orElseThrow(
                 () -> new RuntimeException("Seller " + id + " is not found")
         );
+    }
+
+    public List<SellerAnalyticsDto> getTopSellersListBySalesAmount(LocalDateTime from, LocalDateTime to) {
+        return sellerRepository.findTopSellersByPeriod(from, to);
     }
 }
