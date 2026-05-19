@@ -1,4 +1,4 @@
-package com.shiftlab.crm.controller;
+package com.shiftlab.crm.controller.TransactionController;
 
 import com.shiftlab.crm.entity.PaymentType;
 import com.shiftlab.crm.entity.Transaction;
@@ -11,34 +11,42 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/transactions")
-public class TransactionController {
+public class TransactionControllerCli {
     TransactionService transactionService;
 
-    public TransactionController(TransactionService transactionService) {
+    private final TransactionCreator transactionCreator;
+    private final TransactionGetter transactionGetter;
+    private final PrimePeriodByIdGetter primePeriodByIdGetter;
+
+    public TransactionControllerCli(TransactionService transactionService) {
         this.transactionService = transactionService;
+
+        this.transactionCreator = new TransactionCreator(transactionService);
+        this.transactionGetter = new TransactionGetter(transactionService);
+        this.primePeriodByIdGetter = new PrimePeriodByIdGetter(transactionService);
     }
 
     @PostMapping
     public Transaction createTransaction(@RequestBody TransactionCreateDto transactionCreateDto) {
-        return transactionService.createTransaction(transactionCreateDto);
+        return transactionCreator.createTransaction(transactionCreateDto);
     }
 
     @GetMapping
     public List<Transaction> getAllTransactions(
-            @RequestParam(name = "sellerId",  required = false) Long sellerId,
+            @RequestParam(name = "sellerId", required = false) Long sellerId,
             @RequestParam(name = "paymentType", required = false) PaymentType paymentType
     ) {
-        return transactionService.getTransactions(sellerId, paymentType);
+        return transactionGetter.getAllTransactions(sellerId, paymentType);
     }
 
     @GetMapping("/{transactionId}")
     public Transaction getTransactionById(@PathVariable Long transactionId) {
-        return transactionService.getTransactionById(transactionId);
+        return transactionGetter.getTransactionById(transactionId);
     }
 
     @GetMapping("/prime-period/{sellerId}")
     PrimePeriodDto getPrimePeriodById(@PathVariable Long sellerId) {
-        return null;
+        return primePeriodByIdGetter.getPrimePeriodById(sellerId);
     }
 
 }

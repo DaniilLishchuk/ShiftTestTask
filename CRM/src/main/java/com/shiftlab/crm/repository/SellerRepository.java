@@ -19,4 +19,14 @@ public interface SellerRepository  extends JpaRepository<Seller, Long> {
     List<SellerAnalyticsDto> findTopSellersByPeriod(
             @Param("dateFrom") LocalDateTime dateFrom, @Param("dateTo") LocalDateTime dateTo
     );
+
+    @Query("SELECT u.seller FROM Transaction u " +
+            "WHERE u.transactionDate BETWEEN :dateFrom AND :dateTo " +
+            "GROUP BY u.seller " +
+            "HAVING SUM(u.amount) < :maxAmount")
+    List<Seller> findSellersWithSalesLessThan(
+            @Param("dateFrom") LocalDateTime dateFrom,
+            @Param("dateTo") LocalDateTime dateTo,
+            @Param("maxAmount") Double maxAmount
+    );
 }

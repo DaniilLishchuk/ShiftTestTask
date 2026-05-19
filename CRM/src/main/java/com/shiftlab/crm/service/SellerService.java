@@ -37,4 +37,8 @@ public class SellerService {
     public List<SellerAnalyticsDto> getTopSellersListBySalesAmount(LocalDateTime from, LocalDateTime to) {
         return sellerRepository.findTopSellersByPeriod(from, to);
     }
+
+    public List<Seller> getSellersWithSalesLessThan(LocalDateTime from, LocalDateTime to, Double maxAmount) {
+        return sellerRepository.findSellersWithSalesLessThan(from, to, maxAmount);
+    }
 }
