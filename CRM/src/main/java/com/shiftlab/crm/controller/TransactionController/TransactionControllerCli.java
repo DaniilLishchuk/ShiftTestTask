@@ -4,7 +4,7 @@ import com.shiftlab.crm.entity.PaymentType;
 import com.shiftlab.crm.entity.Transaction;
 import com.shiftlab.crm.dto.PrimePeriodDto;
 import com.shiftlab.crm.dto.TransactionCreateDto;
-import com.shiftlab.crm.service.TransactionService;
+import com.shiftlab.crm.service.TransactionService.TransactionServiceCli;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -12,18 +12,18 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/transactions")
 public class TransactionControllerCli {
-    TransactionService transactionService;
+    TransactionServiceCli transactionServiceCli;
 
     private final TransactionCreator transactionCreator;
     private final TransactionGetter transactionGetter;
     private final PrimePeriodByIdGetter primePeriodByIdGetter;
 
-    public TransactionControllerCli(TransactionService transactionService) {
-        this.transactionService = transactionService;
+    public TransactionControllerCli(TransactionServiceCli transactionServiceCli) {
+        this.transactionServiceCli = transactionServiceCli;
 
-        this.transactionCreator = new TransactionCreator(transactionService);
-        this.transactionGetter = new TransactionGetter(transactionService);
-        this.primePeriodByIdGetter = new PrimePeriodByIdGetter(transactionService);
+        this.transactionCreator = new TransactionCreator(transactionServiceCli);
+        this.transactionGetter = new TransactionGetter(transactionServiceCli);
+        this.primePeriodByIdGetter = new PrimePeriodByIdGetter(transactionServiceCli);
     }
 
     @PostMapping

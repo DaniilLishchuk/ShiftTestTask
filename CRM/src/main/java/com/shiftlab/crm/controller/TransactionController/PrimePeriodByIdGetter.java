@@ -1,17 +1,16 @@
 package com.shiftlab.crm.controller.TransactionController;
 
 import com.shiftlab.crm.dto.PrimePeriodDto;
-import com.shiftlab.crm.service.TransactionService;
-import org.springframework.web.bind.annotation.PathVariable;
+import com.shiftlab.crm.service.TransactionService.TransactionServiceCli;
 
 public class PrimePeriodByIdGetter {
-    private final TransactionService transactionService;
+    private final TransactionServiceCli transactionServiceCli;
 
-    public PrimePeriodByIdGetter(TransactionService transactionService) {
-        this.transactionService = transactionService;
+    public PrimePeriodByIdGetter(TransactionServiceCli transactionServiceCli) {
+        this.transactionServiceCli = transactionServiceCli;
     }
 
     PrimePeriodDto getPrimePeriodById(Long sellerId) {
-        return transactionService.getPrimePeriodById(sellerId);
+        return transactionServiceCli.getPrimePeriodById(sellerId);
     }
 }

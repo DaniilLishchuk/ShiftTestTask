@@ -1,23 +1,21 @@
 package com.shiftlab.crm.controller.SellerController;
 
 import com.shiftlab.crm.entity.Seller;
-import com.shiftlab.crm.service.SellerService;
-import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.web.bind.annotation.RequestParam;
+import com.shiftlab.crm.service.SellerService.SellerServiceCli;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
 public class SellersWithLessSalesGetter {
-    private final SellerService sellerService;
+    private final SellerServiceCli sellerServiceCli;
 
-    public SellersWithLessSalesGetter(SellerService sellerService) {
-        this.sellerService = sellerService;
+    public SellersWithLessSalesGetter(SellerServiceCli sellerServiceCli) {
+        this.sellerServiceCli = sellerServiceCli;
     }
 
     public List<Seller> getSellersWithSalesLessThan(
             LocalDateTime dateFrom, LocalDateTime dateTo, Double maxAmount
     ) {
-        return sellerService.getSellersWithSalesLessThan(dateFrom, dateTo, maxAmount);
+        return sellerServiceCli.getSellersWithSalesLessThan(dateFrom, dateTo, maxAmount);
     }
 }

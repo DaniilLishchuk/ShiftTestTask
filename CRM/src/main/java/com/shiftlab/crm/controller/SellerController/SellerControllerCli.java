@@ -3,7 +3,7 @@ package com.shiftlab.crm.controller.SellerController;
 import com.shiftlab.crm.entity.Seller;
 import com.shiftlab.crm.dto.SellerAnalyticsDto;
 import com.shiftlab.crm.dto.SellerCreateDto;
-import com.shiftlab.crm.service.SellerService;
+import com.shiftlab.crm.service.SellerService.SellerServiceCli;
 
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
@@ -14,20 +14,20 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/sellers")
 public class SellerControllerCli {
-    private final SellerService sellerService;
+    private final SellerServiceCli sellerServiceCli;
 
     private final SellerCreator sellerCreator;
     private final SellerGetter sellerGetter;
     private final SellersWithLessSalesGetter sellersWithLessSalesGetter;
     private final SellerRatingBySalesAmountGetter sellerRatingBySalesAmountGetter;
 
-    public SellerControllerCli(SellerService sellerService) {
-        this.sellerService = sellerService;
+    public SellerControllerCli(SellerServiceCli sellerServiceCli) {
+        this.sellerServiceCli = sellerServiceCli;
 
-        this.sellerCreator = new SellerCreator(sellerService);
-        this.sellerGetter = new SellerGetter(sellerService);
-        this.sellersWithLessSalesGetter = new SellersWithLessSalesGetter(sellerService);
-        this.sellerRatingBySalesAmountGetter = new SellerRatingBySalesAmountGetter(sellerService);
+        this.sellerCreator = new SellerCreator(sellerServiceCli);
+        this.sellerGetter = new SellerGetter(sellerServiceCli);
+        this.sellersWithLessSalesGetter = new SellersWithLessSalesGetter(sellerServiceCli);
+        this.sellerRatingBySalesAmountGetter = new SellerRatingBySalesAmountGetter(sellerServiceCli);
     }
 
     @PostMapping
@@ -42,7 +42,7 @@ public class SellerControllerCli {
 
     @GetMapping("/{sellerId}")
     public Seller getSellerById(@PathVariable Long sellerId) {
-        return sellerService.getSellerById(sellerId);
+        return sellerServiceCli.getSellerById(sellerId);
     }
 
     @GetMapping("/under-performing")

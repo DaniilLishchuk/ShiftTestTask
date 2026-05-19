@@ -1,24 +1,23 @@
 package com.shiftlab.crm.controller.SellerController;
 
 import com.shiftlab.crm.entity.Seller;
-import com.shiftlab.crm.service.SellerService;
-import org.springframework.web.bind.annotation.PathVariable;
+import com.shiftlab.crm.service.SellerService.SellerServiceCli;
 
 import java.util.List;
 
 public class SellerGetter {
-    private final SellerService sellerService;
+    private final SellerServiceCli sellerServiceCli;
 
-    public SellerGetter(SellerService sellerService) {
-        this.sellerService = sellerService;
+    public SellerGetter(SellerServiceCli sellerServiceCli) {
+        this.sellerServiceCli = sellerServiceCli;
     }
 
     public List<Seller> getAllSellers() {
-        return sellerService.getSellersList();
+        return sellerServiceCli.getSellersList();
     }
 
     public Seller getSellerById(Long sellerId) {
-        return sellerService.getSellerById(sellerId);
+        return sellerServiceCli.getSellerById(sellerId);
     }
 
 }
