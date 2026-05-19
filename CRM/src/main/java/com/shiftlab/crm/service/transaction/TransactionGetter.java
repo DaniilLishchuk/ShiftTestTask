@@ -2,6 +2,7 @@ package com.shiftlab.crm.service.transaction;
 
 import com.shiftlab.crm.entity.PaymentType;
 import com.shiftlab.crm.entity.Transaction;
+import com.shiftlab.crm.exception.ResourceNotFoundException;
 import com.shiftlab.crm.repository.TransactionRepository;
 
 import java.util.List;
@@ -19,7 +20,7 @@ public class TransactionGetter {
 
     public Transaction getTransactionById(long id) {
         return transactionRepository.findById(id).orElseThrow(
-                () -> new RuntimeException("Transaction " + id + " is not found")
+                () -> new ResourceNotFoundException("Transaction " + id + " is not found")
         );
     }
 

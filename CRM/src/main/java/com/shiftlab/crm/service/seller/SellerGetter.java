@@ -1,6 +1,7 @@
 package com.shiftlab.crm.service.seller;
 
 import com.shiftlab.crm.entity.Seller;
+import com.shiftlab.crm.exception.ResourceNotFoundException;
 import com.shiftlab.crm.repository.SellerRepository;
 
 import java.util.List;
@@ -18,7 +19,7 @@ public class SellerGetter {
 
     public Seller getSellerById(Long id) {
         return sellerRepository.findById(id).orElseThrow(
-                () -> new RuntimeException("Seller " + id + " is not found")
+                () -> new ResourceNotFoundException("Seller " + id + " is not found")
         );
     }
 }

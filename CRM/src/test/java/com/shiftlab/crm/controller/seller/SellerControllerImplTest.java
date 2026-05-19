@@ -3,6 +3,7 @@ package com.shiftlab.crm.controller.seller;
 import com.shiftlab.crm.dto.SellerAnalyticsDto;
 import com.shiftlab.crm.dto.SellerCreateDto;
 import com.shiftlab.crm.entity.Seller;
+import com.shiftlab.crm.exception.ResourceNotFoundException;
 import com.shiftlab.crm.service.seller.SellerServiceImpl;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -11,6 +12,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultMatcher;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -18,6 +20,7 @@ import java.util.List;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -34,11 +37,9 @@ class SellerControllerImplTest {
     @Test
     @DisplayName("POST /api/sellers")
     void createSeller_ShouldReturnStatusOk() throws Exception {
-        // Создаем мок объекта вместо вызова конструктора new Seller()
         Seller mockSeller = mock(Seller.class);
         when(sellerServiceImpl.createSeller(any(SellerCreateDto.class))).thenReturn(mockSeller);
 
-        // Передаем сырую строку JSON, чтобы не зависеть от конструкторов DTO
         mockMvc.perform(post("/api/sellers")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"name\":\"Тестовый Продавец\",\"email\":\"test@mail.com\"}"))
@@ -52,11 +53,9 @@ class SellerControllerImplTest {
     void getAllSellers_ShouldReturnStatusOk() throws Exception {
         Seller mockSeller = mock(Seller.class);
         when(sellerServiceImpl.getSellersList()).thenReturn(List.of(mockSeller));
-
         mockMvc.perform(get("/api/sellers")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
-
         verify(sellerServiceImpl, times(1)).getSellersList();
     }
 
@@ -66,7 +65,6 @@ class SellerControllerImplTest {
         Long sellerId = 1L;
         Seller mockSeller = mock(Seller.class);
         when(sellerServiceImpl.getSellerById(sellerId)).thenReturn(mockSeller);
-
         mockMvc.perform(get("/api/sellers/" + sellerId)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
@@ -125,5 +123,17 @@ class SellerControllerImplTest {
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest());
         verify(sellerServiceImpl, never()).getSellersWithSalesLessThan(any(), any(), any());
+    }
+
+    @Test
+    @DisplayName("GET /api/sellers/{id}")
+    void getSellerById_ShouldReturn404_WhenSellerNotFound() throws Exception {
+        Long fakeId = 999L;
+        when(sellerServiceImpl.getSellerById(fakeId))
+                .thenThrow(new ResourceNotFoundException("Продавец с ID " + fakeId + " не найден"));
+
+        mockMvc.perform(get("/api/sellers/{id}", fakeId))
+                .andExpect(status().isNotFound()) // Проверяем статус 404
+                .andExpect(jsonPath("$.message").value("Продавец с ID 999 не найден")); // Проверяем осмысленное сообщение
     }
 }
