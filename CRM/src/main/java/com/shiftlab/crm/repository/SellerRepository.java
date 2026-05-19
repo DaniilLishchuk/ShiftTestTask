@@ -1,6 +1,6 @@
 package com.shiftlab.crm.repository;
 
-import com.shiftlab.crm.Seller;
+import com.shiftlab.crm.entity.Seller;
 import com.shiftlab.crm.dto.SellerAnalyticsDto;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;

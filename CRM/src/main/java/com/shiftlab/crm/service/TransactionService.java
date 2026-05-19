@@ -1,8 +1,8 @@
 package com.shiftlab.crm.service;
 
-import com.shiftlab.crm.PaymentType;
-import com.shiftlab.crm.Seller;
-import com.shiftlab.crm.Transaction;
+import com.shiftlab.crm.entity.PaymentType;
+import com.shiftlab.crm.entity.Seller;
+import com.shiftlab.crm.entity.Transaction;
 import com.shiftlab.crm.dto.PrimePeriodDto;
 import com.shiftlab.crm.dto.SellerDailyTransactionCountDto;
 import com.shiftlab.crm.dto.TransactionCreateDto;

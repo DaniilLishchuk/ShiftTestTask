@@ -1,4 +1,4 @@
-package com.shiftlab.crm;
+package com.shiftlab.crm.entity;
 
 import jakarta.persistence.*;
 

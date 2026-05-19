@@ -1,4 +1,4 @@
-package com.shiftlab.crm;
+package com.shiftlab.crm.entity;
 
 public enum PaymentType {
     CASH,

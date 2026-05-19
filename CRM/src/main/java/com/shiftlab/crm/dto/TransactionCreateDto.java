@@ -1,6 +1,6 @@
 package com.shiftlab.crm.dto;
 
-import com.shiftlab.crm.PaymentType;
+import com.shiftlab.crm.entity.PaymentType;
 
 import java.math.BigDecimal;
 

@@ -1,6 +1,6 @@
 package com.shiftlab.crm.controller;
 
-import com.shiftlab.crm.Seller;
+import com.shiftlab.crm.entity.Seller;
 import com.shiftlab.crm.dto.SellerAnalyticsDto;
 import com.shiftlab.crm.dto.SellerCreateDto;
 import com.shiftlab.crm.service.SellerService;
