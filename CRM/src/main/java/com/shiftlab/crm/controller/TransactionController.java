@@ -40,4 +40,5 @@ public class TransactionController {
     PrimePeriodDto getPrimePeriodById(@PathVariable Long sellerId) {
         return null;
     }
+
 }

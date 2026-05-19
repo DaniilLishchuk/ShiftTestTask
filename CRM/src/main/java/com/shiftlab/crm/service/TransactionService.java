@@ -4,6 +4,7 @@ import com.shiftlab.crm.PaymentType;
 import com.shiftlab.crm.Seller;
 import com.shiftlab.crm.Transaction;
 import com.shiftlab.crm.dto.PrimePeriodDto;
+import com.shiftlab.crm.dto.SellerDailyTransactionCountDto;
 import com.shiftlab.crm.dto.TransactionCreateDto;
 import com.shiftlab.crm.repository.SellerRepository;
 import com.shiftlab.crm.repository.TransactionRepository;
@@ -14,6 +15,7 @@ import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -53,7 +55,7 @@ public class TransactionService {
         return transactionRepository.findByFilters(sellerId, paymentType);
     }
 
-    public PrimePeriodDto getPrimePeriodById(Long sellerId) {
+    public PrimePeriodDto getPrimePeriodById(Long sellerId){
         Map<LocalDate,Long> transactionsPeriod = new HashMap<>();
         List<Transaction> sellerTransactionsList = getTransactions(sellerId, null);
         LocalDate startDate = sellerTransactionsList.get(0).getTransactionDate().toLocalDate();
@@ -74,6 +76,46 @@ public class TransactionService {
                 BigDecimal.valueOf(ChronoUnit.DAYS.between(startDate, endDate)+1),
                 8, RoundingMode.HALF_UP
         );
+
+        BigDecimal currentTransactionAmount = BigDecimal.valueOf(0);
+        LocalDate currentStartDate = startDate;
+        LocalDate primePeriodStartDate = startDate;
+        LocalDate primePeriodEndDate = startDate;
+        BigDecimal primePeriodTransactionAmount = BigDecimal.valueOf(0);
+
+        for(LocalDate currentEndDate = startDate;
+            currentEndDate != endDate.plusDays(1);
+            currentEndDate=currentEndDate.plusDays(1)
+        ){
+            currentTransactionAmount = currentTransactionAmount.add(
+                    BigDecimal.valueOf(transactionsPeriod.get(currentEndDate)).subtract(fine));
+
+            if(currentTransactionAmount.compareTo(BigDecimal.valueOf(0)) < 0){
+                currentTransactionAmount = BigDecimal.valueOf(0);
+                currentStartDate = currentEndDate.plusDays(1);
+                continue;
+            }
+
+            if(currentTransactionAmount.compareTo(primePeriodTransactionAmount) > 0){
+                primePeriodTransactionAmount = currentTransactionAmount;
+                primePeriodStartDate = currentStartDate;
+                primePeriodEndDate = currentEndDate;
+            }
+        }
+        List<SellerDailyTransactionCountDto> primePeriodDaysList = new ArrayList<>();
+        SellerDailyTransactionCountDto currentPrimePeriodDay;
+        Long totalSellesInPrimePeriod = 0L;
+        for(LocalDate currentEndDate = primePeriodStartDate;
+            !currentEndDate.isAfter(primePeriodEndDate);
+            currentEndDate=currentEndDate.plusDays(1)) {
+            Long transactionsCountByDay = transactionsPeriod.get(currentEndDate);
+            primePeriodDaysList.add(new SellerDailyTransactionCountDto(currentEndDate, transactionsCountByDay));
+            totalSellesInPrimePeriod += transactionsCountByDay;
+        }
+
+
+        return new PrimePeriodDto(primePeriodStartDate, primePeriodEndDate, totalSellesInPrimePeriod, primePeriodDaysList);
+
 
     }
 
