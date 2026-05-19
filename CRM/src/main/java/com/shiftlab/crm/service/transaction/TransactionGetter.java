@@ -1,4 +1,4 @@
-package com.shiftlab.crm.service.TransactionService;
+package com.shiftlab.crm.service.transaction;
 
 import com.shiftlab.crm.entity.PaymentType;
 import com.shiftlab.crm.entity.Transaction;

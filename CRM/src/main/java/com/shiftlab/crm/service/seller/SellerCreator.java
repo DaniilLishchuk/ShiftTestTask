@@ -1,4 +1,4 @@
-package com.shiftlab.crm.service.SellerService;
+package com.shiftlab.crm.service.seller;
 
 import com.shiftlab.crm.dto.SellerCreateDto;
 import com.shiftlab.crm.entity.Seller;

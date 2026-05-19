@@ -1,29 +1,29 @@
-package com.shiftlab.crm.controller.TransactionController;
+package com.shiftlab.crm.controller.transaction;
 
 import com.shiftlab.crm.entity.PaymentType;
 import com.shiftlab.crm.entity.Transaction;
 import com.shiftlab.crm.dto.PrimePeriodDto;
 import com.shiftlab.crm.dto.TransactionCreateDto;
-import com.shiftlab.crm.service.TransactionService.TransactionServiceCli;
+import com.shiftlab.crm.service.transaction.TransactionServiceImpl;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/transactions")
-public class TransactionControllerCli {
-    TransactionServiceCli transactionServiceCli;
+public class TransactionControllerImpl {
+    TransactionServiceImpl transactionServiceImpl;
 
     private final TransactionCreator transactionCreator;
     private final TransactionGetter transactionGetter;
     private final PrimePeriodByIdGetter primePeriodByIdGetter;
 
-    public TransactionControllerCli(TransactionServiceCli transactionServiceCli) {
-        this.transactionServiceCli = transactionServiceCli;
+    public TransactionControllerImpl(TransactionServiceImpl transactionServiceImpl) {
+        this.transactionServiceImpl = transactionServiceImpl;
 
-        this.transactionCreator = new TransactionCreator(transactionServiceCli);
-        this.transactionGetter = new TransactionGetter(transactionServiceCli);
-        this.primePeriodByIdGetter = new PrimePeriodByIdGetter(transactionServiceCli);
+        this.transactionCreator = new TransactionCreator(transactionServiceImpl);
+        this.transactionGetter = new TransactionGetter(transactionServiceImpl);
+        this.primePeriodByIdGetter = new PrimePeriodByIdGetter(transactionServiceImpl);
     }
 
     @PostMapping

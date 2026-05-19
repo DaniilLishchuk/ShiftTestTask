@@ -1,9 +1,9 @@
-package com.shiftlab.crm.controller.SellerController;
+package com.shiftlab.crm.controller.seller;
 
 import com.shiftlab.crm.entity.Seller;
 import com.shiftlab.crm.dto.SellerAnalyticsDto;
 import com.shiftlab.crm.dto.SellerCreateDto;
-import com.shiftlab.crm.service.SellerService.SellerServiceCli;
+import com.shiftlab.crm.service.seller.SellerServiceImpl;
 
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
@@ -13,21 +13,21 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/sellers")
-public class SellerControllerCli {
-    private final SellerServiceCli sellerServiceCli;
+public class SellerControllerImpl {
+    private final SellerServiceImpl sellerServiceImpl;
 
     private final SellerCreator sellerCreator;
     private final SellerGetter sellerGetter;
     private final SellersWithLessSalesGetter sellersWithLessSalesGetter;
     private final SellerRatingBySalesAmountGetter sellerRatingBySalesAmountGetter;
 
-    public SellerControllerCli(SellerServiceCli sellerServiceCli) {
-        this.sellerServiceCli = sellerServiceCli;
+    public SellerControllerImpl(SellerServiceImpl sellerServiceImpl) {
+        this.sellerServiceImpl = sellerServiceImpl;
 
-        this.sellerCreator = new SellerCreator(sellerServiceCli);
-        this.sellerGetter = new SellerGetter(sellerServiceCli);
-        this.sellersWithLessSalesGetter = new SellersWithLessSalesGetter(sellerServiceCli);
-        this.sellerRatingBySalesAmountGetter = new SellerRatingBySalesAmountGetter(sellerServiceCli);
+        this.sellerCreator = new SellerCreator(sellerServiceImpl);
+        this.sellerGetter = new SellerGetter(sellerServiceImpl);
+        this.sellersWithLessSalesGetter = new SellersWithLessSalesGetter(sellerServiceImpl);
+        this.sellerRatingBySalesAmountGetter = new SellerRatingBySalesAmountGetter(sellerServiceImpl);
     }
 
     @PostMapping
@@ -42,7 +42,7 @@ public class SellerControllerCli {
 
     @GetMapping("/{sellerId}")
     public Seller getSellerById(@PathVariable Long sellerId) {
-        return sellerServiceCli.getSellerById(sellerId);
+        return sellerServiceImpl.getSellerById(sellerId);
     }
 
     @GetMapping("/under-performing")

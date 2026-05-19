@@ -1,4 +1,4 @@
-package com.shiftlab.crm.service.TransactionService.PrimePeriodAlgorithm;
+package com.shiftlab.crm.service.transaction.algorithm;
 
 import com.shiftlab.crm.entity.Transaction;
 
@@ -6,7 +6,6 @@ import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.NavigableMap;
 import java.util.stream.Collectors;
 
 public class TransactionQueryService {

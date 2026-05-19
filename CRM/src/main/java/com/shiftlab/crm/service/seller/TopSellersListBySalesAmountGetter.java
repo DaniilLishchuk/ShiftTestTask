@@ -1,7 +1,6 @@
-package com.shiftlab.crm.service.SellerService;
+package com.shiftlab.crm.service.seller;
 
 import com.shiftlab.crm.dto.SellerAnalyticsDto;
-import com.shiftlab.crm.entity.Seller;
 import com.shiftlab.crm.repository.SellerRepository;
 
 import java.time.LocalDateTime;

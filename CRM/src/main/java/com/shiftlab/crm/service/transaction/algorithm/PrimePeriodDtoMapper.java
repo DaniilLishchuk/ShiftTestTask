@@ -1,4 +1,4 @@
-package com.shiftlab.crm.service.TransactionService.PrimePeriodAlgorithm;
+package com.shiftlab.crm.service.transaction.algorithm;
 
 import com.shiftlab.crm.dto.PrimePeriodDto;
 import com.shiftlab.crm.dto.SellerDailyTransactionCountDto;

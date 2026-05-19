@@ -1,4 +1,4 @@
-package com.shiftlab.crm.service.SellerService;
+package com.shiftlab.crm.service.seller;
 
 import com.shiftlab.crm.entity.Seller;
 import com.shiftlab.crm.dto.SellerAnalyticsDto;
@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
-public class SellerServiceCli {
+public class SellerServiceImpl {
     private final SellerRepository sellerRepository;
 
     private final SellerCreator sellerCreator;
@@ -18,7 +18,7 @@ public class SellerServiceCli {
     private final SellersWithSalesLessThanGetter sellersWithSalesLessThanGetter;
     private final TopSellersListBySalesAmountGetter topSellersListBySalesAmountGetter;
 
-    public SellerServiceCli(SellerRepository sellerRepository) {
+    public SellerServiceImpl(SellerRepository sellerRepository) {
         this.sellerRepository = sellerRepository;
 
         this.sellerCreator = new SellerCreator();

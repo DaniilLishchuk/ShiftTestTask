@@ -1,24 +1,21 @@
-package com.shiftlab.crm.service.TransactionService.PrimePeriodAlgorithm;
+package com.shiftlab.crm.service.transaction.algorithm;
 
 import com.shiftlab.crm.dto.PrimePeriodDto;
 import com.shiftlab.crm.entity.Transaction;
-import com.shiftlab.crm.service.TransactionService.TransactionServiceCli;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
-public class PrimePeriodAlgorithmCli {
+public class PrimePeriodAlgorithmImpl {
     private Map<LocalDate, Long> transactionsAmountByDay;
 
     private final TransactionQueryService transactionQueryService;
     private final PrimePeriodSearching primePeriodSearching;
     private final PrimePeriodDtoMapper primePeriodDtoMapper;
 
-    public PrimePeriodAlgorithmCli(List<Transaction> sellerTransactionsList) {
+    public PrimePeriodAlgorithmImpl(List<Transaction> sellerTransactionsList) {
         this.transactionsAmountByDay = new HashMap<>();
 
         this.transactionQueryService = new TransactionQueryService(sellerTransactionsList);
