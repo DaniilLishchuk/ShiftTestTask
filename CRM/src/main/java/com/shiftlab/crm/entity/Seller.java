@@ -78,7 +78,7 @@ public class Seller {
     }
 
     @CreationTimestamp
-    @Column(name = "created_at", updatable = false)
+    @Column(name = "created_at_in_data_base", updatable = false)
     private LocalDateTime createdAt;
 
     @UpdateTimestamp
