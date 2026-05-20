@@ -1,3 +1,4 @@
+# RUS
 # CRM-Система для управления продавцами и аналитики продаж (Seller CRM)
 
 Веб-приложение на базе **Spring Boot**, предназначенное для автоматизации учета продавцов, ведения их контактных данных, а также построения глубокой аналитики эффективности продаж за определенные периоды времени.
@@ -268,6 +269,283 @@
       "status": 404,
       "error": "Not Found",
       "message": "Продавец с ID 999 не найден",
+      "path": "/api/sellers/999"
+    }
+    ```
+# ENG
+# Seller CRM: Management & Sales Analytics System
+
+A **Spring Boot**-based web application designed to automate seller management, maintain contact records, and generate deep sales performance analytics over specified time periods.
+
+---
+
+## 1. Features
+
+The project provides a fully functional REST API for managing `Seller` entities and calculating core business metrics:
+
+* **Seller Management (CRUD):**
+    * Registration of new sellers with incoming data validation.
+    * Retrieving a full list of registered sellers and viewing detailed info by ID.
+    * **Updating seller profiles (PUT).**
+    * **Soft Delete of sellers** to safely deactivate profiles without breaking transaction history.
+* **Transaction Management:**
+    * Registration of completed transactions (amount, payment type, date, and seller assignment).
+    * Retrieving all transactions with flexible filtering by seller ID and payment type.
+    * Retrieving detailed information for a specific transaction by ID.
+* **Analytics Module (Business Metrics):**
+    * **Under-performing Sellers (`under-performing`):** Identifies employees whose total revenue within a given period is strictly below a specified threshold.
+    * **Sales Performance Rating (`seller-rating-by-sales`):** Ranks sellers based on total sales volume over a specified period to highlight top performers.
+    * **Peak Performance Period (Star Task):** An advanced algorithm designed to find the specific time window during which a seller achieved their highest volume of transactions.
+* **Architectural Highlights:**
+    * **Controller Logic Delegation (SRP):** Endpoint logic is split into highly specialized single-responsibility components: for sellers (`SellerCreator`, `SellerGetter`, etc.) and for transactions (`TransactionCreator`, `TransactionGetter`, `PrimePeriodByIdGetter`).
+    * **Data Immutability & Audit Logging:** Automated audit fields (`created_at` / `updated_at`) managed via Hibernate `@CreationTimestamp` and `@UpdateTimestamp`. Transactions are designed to be immutable to preserve historical audit trails.
+    * **Global Exception Handling:** A centralized `GlobalExceptionHandler` intercepting errors and mapping them to standardized 400/404 JSON responses.
+
+---
+
+## 2. Requirements
+
+To build and successfully run this application, ensure your environment meets the following specifications:
+
+* **Runtime:** Java Development Kit (JDK) version **21**.
+* **Build System:** Gradle (the project includes an embedded Gradle Wrapper).
+* **Database:** PostgreSQL (recommended version 15 or higher).
+
+## 3. Build & Run Instructions
+
+### Step 1: Database Setup
+1. Ensure your PostgreSQL service is active and running.
+2. Create an empty database for the project (e.g., via `psql` or pgAdmin):
+   ```sql
+   CREATE DATABASE crm_db;
+   ```
+3. Open the main configuration file `src/main/resources/application.properties` and update the datasource credentials to match your database settings.
+
+### Step 2: Build the Project
+Navigate to the project's root folder in your terminal and execute the command to clean the cache and compile the application:
+
+* **For Windows (Command Prompt / PowerShell):**
+  ```cmd
+  gradlew.bat clean build -x test
+  ```
+* **For Linux / macOS:**
+  ```bash
+  ./gradlew clean build -x test
+  ```
+
+### Step 3: Run the Application
+Once the build is complete, you can start the application using one of the following methods:
+
+1. **Directly via the Gradle Wrapper:**
+   ```bash
+   ./gradlew bootRun
+   ```
+2. **Running the compiled executable JAR file:**
+   ```bash
+   java -jar build/libs/crm-0.0.1-SNAPSHOT.jar
+   ```
+
+The server will initialize and become accessible at: `http://localhost:8080`
+
+### Step 4: Run Tests with Test Coverage Check
+To execute the entire unit and integration test suite (including MockMvc controller tests), run:
+```bash
+./gradlew test
+```
+
+---
+
+## 4. API Usage Examples
+
+### Sellers API Block (`/api/sellers`)
+
+### 1. Register a New Seller
+* **HTTP Method:** `POST`
+* **Endpoint:** `/api/sellers`
+* **Headers:** `Content-Type: application/json`
+* **Request Body (JSON):**
+    ```json
+    {
+      "name": "John Doe",
+      "contactInfo": "john.doe@example.com, +1 (555) 123-4567"
+    }
+    ```
+* **Sample Success Response (200 OK):**
+    ```json
+    {
+      "id": 1,
+      "name": "John Doe",
+      "contactInfo": "john.doe@example.com, +1 (555) 123-4567"
+    }
+    ```
+
+### 2. Get All Sellers
+* **HTTP Method:** `GET`
+* **Endpoint:** `/api/sellers`
+* **Sample Success Response (200 OK):**
+    ```json
+    [
+      {
+        "id": 1,
+        "name": "John Doe",
+        "contactInfo": "john.doe@example.com, +1 (555) 123-4567"
+      },
+      {
+        "id": 2,
+        "name": "Jane Smith",
+        "contactInfo": "jane.smith@example.com"
+      }
+    ]
+    ```
+
+### 3. Get Seller by Unique ID
+* **HTTP Method:** `GET`
+* **Endpoint:** `/api/sellers/{sellerId}`
+* **Sample Request:** `GET /api/sellers/1`
+* **Sample Success Response (200 OK):**
+    ```json
+    {
+      "id": 1,
+      "name": "John Doe",
+      "contactInfo": "john.doe@example.com, +1 (555) 123-4567"
+    }
+    ```
+
+### 4. Update Seller Information
+* **HTTP Method:** `PUT`
+* **Endpoint:** `/api/sellers/{sellerId}`
+* **Request Body (JSON):**
+    ```json
+    {
+      "name": "John Doe (Updated)",
+      "contactInfo": "new.email@example.com"
+    }
+    ```
+* **Sample Success Response (200 OK):**
+    ```json
+    {
+      "id": 1,
+      "name": "John Doe (Updated)",
+      "contactInfo": "new.email@example.com"
+    }
+    ```
+
+### 5. Find Under-performing Sellers (Sales Below Threshold)
+* **HTTP Method:** `GET`
+* **Endpoint:** `/api/sellers/under-performing`
+* **Sample Request:** `GET /api/sellers/under-performing?dateFrom=2026-01-01T00:00:00&dateTo=2026-12-31T23:59:59&maxAmount=5000.0`
+* **Sample Success Response (200 OK):**
+    ```json
+    [
+      {
+        "id": 2,
+        "name": "Jane Smith",
+        "contactInfo": "jane.smith@example.com"
+      }
+    ]
+    ```
+
+### 6. Get Seller Rating by Sales Volume
+* **HTTP Method:** `GET`
+* **Endpoint:** `/api/sellers/seller-rating-by-sales`
+* **Sample Request:** `GET /api/sellers/seller-rating-by-sales?dateFrom=2026-01-01T00:00:00&dateTo=2026-12-31T23:59:59`
+* **Sample Success Response (200 OK):**
+    ```json
+    [
+      {
+        "sellerId": 1,
+        "name": "John Doe",
+        "totalSalesAmount": 154500.0,
+        "salesCount": 42
+      }
+    ]
+    ```
+
+### 7. Delete a Seller (Soft Delete)
+* **HTTP Method:** `DELETE`
+* **Endpoint:** `/api/sellers/{sellerId}`
+* **Sample Request:** `DELETE /api/sellers/1`
+* **Sample Success Response:** `200 OK` (Empty response body)
+
+---
+
+### Transactions API Block (`/api/transactions`)
+
+### 8. Create a New Transaction
+* **HTTP Method:** `POST`
+* **Endpoint:** `/api/transactions`
+* **Request Body (JSON):**
+    ```json
+    {
+      "sellerId": 1,
+      "amount": 4500.0,
+      "paymentType": "CASH",
+      "transactionDate": "2026-05-20T12:00:00"
+    }
+    ```
+* **Sample Success Response (200 OK):**
+    ```json
+    {
+      "id": 101,
+      "amount": 4500.0,
+      "paymentType": "CASH",
+      "transactionDate": "2026-05-20T12:00:00",
+      "createdAt": "2026-05-20T12:05:21"
+    }
+    ```
+
+### 9. Get All Transactions (With Filters)
+* **HTTP Method:** `GET`
+* **Endpoint:** `/api/transactions`
+* **Query Parameters (Optional):** `sellerId` (Filter by Seller ID), `paymentType` (Filter by CASH/CARD/TRANSFER).
+* **Sample Request with Filter:** `GET /api/transactions?sellerId=1`
+* **Sample Success Response (200 OK):**
+    ```json
+    [
+      {
+        "id": 101,
+        "amount": 4500.0,
+        "paymentType": "CASH",
+        "transactionDate": "2026-05-20T12:00:00",
+        "createdAt": "2026-05-20T12:05:21"
+      }
+    ]
+    ```
+
+### 10. Get Transaction by ID
+* **HTTP Method:** `GET`
+* **Endpoint:** `/api/transactions/{transactionId}`
+* **Sample Request:** `GET /api/transactions/101`
+
+### 11. Get Seller's Peak Performance Period (Star Task)
+* **HTTP Method:** `GET`
+* **Endpoint:** `/api/transactions/prime-period/{sellerId}`
+* **Sample Request:** `GET /api/transactions/prime-period/1`
+* **Sample Success Response (200 OK):**
+    ```json
+    {
+      "sellerId": 1,
+      "dateFrom": "2026-03-01T00:00:00",
+      "dateTo": "2026-03-15T23:59:59",
+      "transactionsCount": 89
+    }
+    ```
+
+---
+
+## 5. Exception Handling (API Errors)
+
+If a requested resource (Seller or Transaction) is not found within the system, the application interceptor halts normal execution and returns a standardized error payload instead of a raw stack trace:
+
+### Example: Requesting a Non-Existent Seller (`GET /api/sellers/999`)
+* **HTTP Status:** `404 Not Found`
+* **Response Body (JSON):**
+    ```json
+    {
+      "timestamp": "2026-05-19T19:52:00",
+      "status": 404,
+      "error": "Not Found",
+      "message": "Seller with ID 999 not found",
       "path": "/api/sellers/999"
     }
     ```
