@@ -17,6 +17,8 @@ public class SellerServiceImpl {
     private final SellerGetter sellerGetter;
     private final SellersWithSalesLessThanGetter sellersWithSalesLessThanGetter;
     private final TopSellersListBySalesAmountGetter topSellersListBySalesAmountGetter;
+    private final SellerDeleter sellerDeleter;
+    private final SellerUpdater sellerUpdater;
 
     public SellerServiceImpl(SellerRepository sellerRepository) {
         this.sellerRepository = sellerRepository;
@@ -25,6 +27,8 @@ public class SellerServiceImpl {
         this.sellerGetter = new SellerGetter(sellerRepository);
         this.sellersWithSalesLessThanGetter = new SellersWithSalesLessThanGetter(sellerRepository);
         this.topSellersListBySalesAmountGetter = new TopSellersListBySalesAmountGetter(sellerRepository);
+        this.sellerDeleter = new SellerDeleter(sellerRepository);
+        this.sellerUpdater = new SellerUpdater(sellerRepository);
     }
 
     public Seller createSeller(SellerCreateDto sellerCreateDto) {
@@ -46,5 +50,13 @@ public class SellerServiceImpl {
 
     public List<Seller> getSellersWithSalesLessThan(LocalDateTime from, LocalDateTime to, Double maxAmount) {
         return sellersWithSalesLessThanGetter.getSellersWithSalesLessThan(from, to, maxAmount);
+    }
+
+    public void deleteSeller(Long sellerId) {
+        sellerDeleter.delete(sellerId);
+    }
+
+    public Seller updateSeller(Long sellerId, SellerCreateDto sellerDto) {
+        return sellerUpdater.updateSeller(sellerId, sellerDto);
     }
 }

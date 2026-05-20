@@ -1,5 +1,6 @@
 package com.shiftlab.crm.controller.seller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.shiftlab.crm.dto.SellerAnalyticsDto;
 import com.shiftlab.crm.dto.SellerCreateDto;
 import com.shiftlab.crm.entity.Seller;
@@ -13,6 +14,9 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultMatcher;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -30,6 +34,9 @@ class SellerControllerImplTest {
 
     @Autowired
     private MockMvc mockMvc;
+
+    @Autowired
+    private ObjectMapper objectMapper;
 
     @MockitoBean
     private SellerServiceImpl sellerServiceImpl;
@@ -133,7 +140,73 @@ class SellerControllerImplTest {
                 .thenThrow(new ResourceNotFoundException("Продавец с ID " + fakeId + " не найден"));
 
         mockMvc.perform(get("/api/sellers/{id}", fakeId))
-                .andExpect(status().isNotFound()) // Проверяем статус 404
-                .andExpect(jsonPath("$.message").value("Продавец с ID 999 не найден")); // Проверяем осмысленное сообщение
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.message").value("Продавец с ID 999 не найден"));
+    }
+
+    @Test
+    @DisplayName("DELETE /api/sellers/{sellerId}")
+    void deleteSeller_ShouldReturnStatusOk() throws Exception {
+        Long sellerId = 1L;
+        doNothing().when(sellerServiceImpl).deleteSeller(sellerId);
+
+        mockMvc.perform(MockMvcRequestBuilders.delete("/api/sellers/" + sellerId))
+                .andExpect(status().isOk());
+
+        verify(sellerServiceImpl, times(1)).deleteSeller(sellerId);
+    }
+
+    @Test
+    @DisplayName("DELETE /api/sellers/{sellerId}")
+    void deleteSeller_ShouldReturn404_WhenSellerNotFound() throws Exception {
+        Long fakeId = 999L;
+        doThrow(new ResourceNotFoundException("Продавец с ID " + fakeId + " не найден"))
+                .when(sellerServiceImpl).deleteSeller(fakeId);
+
+        mockMvc.perform(MockMvcRequestBuilders.delete("/api/sellers/" + fakeId))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.message").value("Продавец с ID 999 не найден"));
+    }
+    
+    @Test
+    @DisplayName("PUT /api/sellers/{sellerId}")
+    void updateSeller_ShouldReturnUpdatedSeller() throws Exception {
+        Long sellerId = 1L;
+
+        SellerCreateDto updateDto = new SellerCreateDto("Новое Имя", "Новые контакты");
+
+        Seller updatedSeller = new Seller();
+        updatedSeller.setId(sellerId);
+        updatedSeller.setName("Новое Имя");
+        updatedSeller.setContactInfo("Новые контакты");
+
+        when(sellerServiceImpl.updateSeller(eq(sellerId), any(SellerCreateDto.class))).thenReturn(updatedSeller);
+
+        mockMvc.perform(MockMvcRequestBuilders.put("/api/sellers/" + sellerId)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(updateDto)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(sellerId))
+                .andExpect(jsonPath("$.name").value("Новое Имя"))
+                .andExpect(jsonPath("$.contactInfo").value("Новые контакты"));
+
+        verify(sellerServiceImpl, times(1)).updateSeller(eq(sellerId), any(SellerCreateDto.class));
+    }
+
+    @Test
+    @DisplayName("PUT /api/sellers/{sellerId} ")
+    void updateSeller_ShouldReturn404_WhenSellerNotFound() throws Exception {
+        Long fakeId = 999L;
+
+        SellerCreateDto updateDto = new SellerCreateDto("Тест", "Тест");
+
+        when(sellerServiceImpl.updateSeller(eq(fakeId), any(SellerCreateDto.class)))
+                .thenThrow(new ResourceNotFoundException("Продавец с ID " + fakeId + " не найден"));
+
+        mockMvc.perform(MockMvcRequestBuilders.put("/api/sellers/" + fakeId)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(updateDto)))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.message").value("Продавец с ID 999 не найден"));
     }
 }

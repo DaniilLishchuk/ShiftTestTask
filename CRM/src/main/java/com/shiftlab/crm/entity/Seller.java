@@ -1,6 +1,8 @@
 package com.shiftlab.crm.entity;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
 
@@ -62,5 +64,25 @@ public class Seller {
     public LocalDateTime getRegistrationDate() {
         return registrationDate;
     }
+
+    @Column(name = "is_deleted")
+    private boolean isDeleted = false;
+
+    public boolean isDeleted() {
+        return isDeleted;
+
+    }
+
+    public void setDeleted(boolean deleted) {
+        isDeleted = deleted;
+    }
+
+    @CreationTimestamp
+    @Column(name = "created_at", updatable = false)
+    private LocalDateTime createdAt;
+
+    @UpdateTimestamp
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
 
 }

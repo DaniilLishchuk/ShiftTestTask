@@ -20,6 +20,8 @@ public class SellerControllerImpl {
     private final SellerGetter sellerGetter;
     private final SellersWithLessSalesGetter sellersWithLessSalesGetter;
     private final SellerRatingBySalesAmountGetter sellerRatingBySalesAmountGetter;
+    private final SellerDeleter sellerDeleter;
+    private final SellerUpdater sellerUpdater;
 
     public SellerControllerImpl(SellerServiceImpl sellerServiceImpl) {
         this.sellerServiceImpl = sellerServiceImpl;
@@ -28,6 +30,8 @@ public class SellerControllerImpl {
         this.sellerGetter = new SellerGetter(sellerServiceImpl);
         this.sellersWithLessSalesGetter = new SellersWithLessSalesGetter(sellerServiceImpl);
         this.sellerRatingBySalesAmountGetter = new SellerRatingBySalesAmountGetter(sellerServiceImpl);
+        this.sellerDeleter = new SellerDeleter(sellerServiceImpl);
+        this.sellerUpdater = new SellerUpdater(sellerServiceImpl);
     }
 
     @PostMapping
@@ -62,4 +66,13 @@ public class SellerControllerImpl {
         return sellerRatingBySalesAmountGetter.getTopSellersListBySalesAmount(dateFrom, dateTo);
     }
 
+    @DeleteMapping("/{sellerId}")
+    public void deleteSeller(@PathVariable Long sellerId) {
+        sellerDeleter.deleteSeller(sellerId);
+    }
+
+    @PutMapping("/{sellerId}")
+    public Seller updateSeller(@PathVariable Long sellerId, @RequestBody SellerCreateDto sellerDto) {
+        return sellerUpdater.updateSeller(sellerId, sellerDto);
+    }
 }
