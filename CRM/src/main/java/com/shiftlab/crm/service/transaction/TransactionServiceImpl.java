@@ -8,6 +8,7 @@ import com.shiftlab.crm.repository.SellerRepository;
 import com.shiftlab.crm.repository.TransactionRepository;
 import com.shiftlab.crm.service.transaction.algorithm.PrimePeriodAlgorithmImpl;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -27,6 +28,7 @@ public class TransactionServiceImpl {
         this.transactionGetter = new TransactionGetter(transactionRepository);
     }
 
+    @Transactional
     public Transaction createTransaction(TransactionCreateDto transactionCreateDto) {
         Transaction transaction = transactionCreator.createTransaction(transactionCreateDto);
         return transactionRepository.save(transaction);

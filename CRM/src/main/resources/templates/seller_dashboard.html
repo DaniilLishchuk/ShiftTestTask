@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Личный кабинет продавца</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+
+<nav class="navbar navbar-dark bg-info mb-4">
+    <div class="container-fluid">
+        <span class="navbar-brand mb-0 h1 text-dark" th:text="${'Личный кабинет продавца: ' + seller.name}">Личный кабинет</span>
+        <a href="/logout" class="btn btn-outline-dark btn-sm">Выйти</a>
+    </div>
+</nav>
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-4 mb-4">
+            <div class="card text-white bg-dark shadow mb-4">
+                <div class="card-body text-center">
+                    <h5 class="card-title text-muted text-uppercase mb-3">Текущий баланс кошелька</h5>
+                    <h1 class="display-5 my-3 fw-bold text-warning" th:text="${seller.balance != null ? seller.balance + ' ₽' : '0.00 ₽'}">0.00 ₽</h1>
+                    <p class="card-text text-success small">● Данные синхронизированы с PostgreSQL</p>
+                </div>
+            </div>
+
+            <div class="card shadow-sm">
+                <div class="card-header bg-white"><strong>Провести новую продажу</strong></div>
+                <div class="card-body">
+                    <form id="transactionForm">
+                        <input type="hidden" id="sellerId" th:value="${seller.id}">
+
+                        <div class="mb-3">
+                            <label class="form-label">Сумма (₽)</label>
+                            <input type="number" step="0.01" class="form-control" id="amount" required placeholder="Введите сумму">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Способ оплаты</label>
+                            <select class="form-select" id="paymentType">
+                                <option th:each="type : ${paymentTypes}" th:value="${type}" th:text="${type}"></option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-success w-100">Отправить в систему</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-8 mb-4">
+            <div class="card shadow-sm">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0">История моих персональных сделок</h5>
+                </div>
+                <div class="card-body">
+                    <table class="table table-striped table-hover align-middle">
+                        <thead>
+                        <tr>
+                            <th>ID Сделки</th>
+                            <th>Сумма</th>
+                            <th>Тип оплаты</th>
+                            <th>Дата проведения</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="t : ${transactions}">
+                            <td th:text="${t.id}">101</td>
+                            <td class="fw-bold text-primary" th:text="${t.amount + ' ₽'}">1500 ₽</td>
+                            <td th:text="${t.paymentType}">CARD</td>
+                            <td th:text="${#temporals.format(t.transactionDate, 'dd.MM.yyyy HH:mm')}">Сегодня</td>
+                        </tr>
+                        <tr th:if="${#lists.isEmpty(transactions)}">
+                            <td colspan="4" class="text-center text-muted">У вас пока нет зарегистрированных транзакций</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.getElementById('transactionForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        const data = {
+            sellerId: parseInt(document.getElementById('sellerId').value),
+            amount: parseFloat(document.getElementById('amount').value),
+            paymentType: document.getElementById('paymentType').value
+        };
+
+        fetch('/api/transactions', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        })
+        .then(response => {
+            if(response.ok) {
+                window.location.reload();
+            } else {
+                alert('Ошибка при создании транзакции. Проверьте валидацию бэкенда.');
+            }
+        })
+        .catch(error => console.error('Error:', error));
+    });
+</script>
+</body>
+</html>

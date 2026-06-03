@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public interface SellerRepository  extends JpaRepository<Seller, Long> {
-    @Query("SELECT new com.shiftlab.crm.dto.SellerAnalyticsDto(s.id, s.name, SUM(u.amount)) " +
+    @Query("SELECT new com.shiftlab.crm.dto.SellerAnalyticsDto(s.id, s.name, SUM(u.amount), COUNT(u.id)) " +
             "FROM Transaction u " +
             "JOIN u.seller s " +
             "WHERE u.transactionDate BETWEEN :dateFrom AND :dateTo " +

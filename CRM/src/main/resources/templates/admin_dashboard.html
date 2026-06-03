@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Панель Администратора — Seller CRM</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+
+<nav class="navbar navbar-dark bg-dark mb-4">
+    <div class="container-fluid">
+        <span class="navbar-brand mb-0 h1">Seller CRM — Панель Администратора </span>
+        <a href="/logout" class="btn btn-outline-danger btn-sm">Выйти из системы</a>
+    </div>
+</nav>
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-6 mb-4">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Все продавцы и баланс кошельков</h5>
+                </div>
+                <div class="card-body">
+                    <table class="table table-hover align-middle">
+                        <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>ФИО Продавца</th>
+                            <th>Баланс кошелька</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="s : ${sellers}">
+                            <td th:text="${s.id}">1</td>
+                            <td th:text="${s.name}">Иван Иванов</td>
+                            <td class="fw-bold text-success" th:text="${s.balance != null ? s.balance + ' ₽' : '0.00 ₽'}">0.00 ₽</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6 mb-4">
+            <div class="card shadow-sm">
+                <div class="card-header bg-success text-white">
+                    <h5 class="mb-0">Рейтинг эффективности (Аналитика из ТЗ)</h5>
+                </div>
+                <div class="card-body">
+                    <table class="table table-striped align-middle">
+                        <thead>
+                        <tr>
+                            <th>Продавец</th>
+                            <th>Общая выручка</th>
+                            <th>Кол-во сделок</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="r : ${rating}">
+                            <td th:text="${r.name}">Иван Иванов</td>
+                            <td class="fw-bold text-dark" th:text="${r.salesAmount + ' ₽'}">150 000 ₽</td>
+                            <td th:text="${r.salesCount}">42</td>
+                        </tr>
+                        <tr th:if="${#lists.isEmpty(rating)}">
+                            <td colspan="3" class="text-center text-muted">Нет данных по продажам за текущий период</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-12">
+            <div class="card shadow-sm mb-5">
+                <div class="card-header bg-secondary text-white">
+                    <h5 class="mb-0">Глобальный лог транзакций (Система аудита)</h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-sm table-hover align-middle">
+                            <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Продавец</th>
+                                <th>Сумма сделки</th>
+                                <th>Тип оплаты</th>
+                                <th>Дата проведения</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="t : ${transactions}">
+                                <td th:text="${t.id}">101</td>
+                                <td th:text="${t.seller.name}">Иван Иванов</td>
+                                <td class="fw-bold" th:text="${t.amount + ' ₽'}">4500 ₽</td>
+                                <td><span class="badge bg-info text-dark" th:text="${t.paymentType}">CASH</span></td>
+                                <td th:text="${#temporals.format(t.transactionDate, 'dd.MM.yyyy HH:mm:ss')}">20.05.2026</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
