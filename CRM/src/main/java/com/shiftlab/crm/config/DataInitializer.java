@@ -5,6 +5,7 @@ import com.shiftlab.crm.repository.SellerRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -13,17 +14,19 @@ import java.time.LocalDateTime;
 public class DataInitializer {
 
     @Bean
-    public CommandLineRunner initData(SellerRepository sellerRepository) {
+    public CommandLineRunner initData(SellerRepository sellerRepository, PasswordEncoder passwordEncoder) {
         return args -> {
             if (sellerRepository.count() == 0) {
-                Seller seller = new Seller();
-                seller.setName("Иван Иванов (Демо)");
-                seller.setContactInfo("ivan@example.com");
-                seller.setRegistrationDate(LocalDateTime.now());
-                seller.setBalance(BigDecimal.ZERO);
+                Seller admin = new Seller();
+                admin.setName("Главный Администратор");
+                admin.setContactInfo("admin@crm.com"); // Это его логин
+                admin.setPassword(passwordEncoder.encode("admin123")); // Пароль: admin123
+                admin.setRole("ROLE_ADMIN");
+                admin.setRegistrationDate(LocalDateTime.now());
+                admin.setBalance(BigDecimal.ZERO);
+                sellerRepository.save(admin);
 
-                sellerRepository.save(seller);
-                System.out.println("✅ База была пустой. Демонстрационный продавец успешно создан (ID: " + seller.getId() + ")!");
+                System.out.println("✅ База инициализирована. Создан Админ (Логин: admin@crm.com, Пароль: admin123)");
             }
         };
     }

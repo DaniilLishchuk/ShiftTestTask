@@ -96,4 +96,26 @@ public class Seller {
     public BigDecimal getBalance() {
         return balance;
     }
+
+    @Column(name = "password")
+    private String password;
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    @Column(name = "role")
+    private String role;
+
+    public void setRole(String role) {
+        this.role = role;
+    }
+
+    public String getRole() {
+        return role;
+    }
 }

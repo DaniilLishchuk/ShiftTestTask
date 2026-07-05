@@ -1,6 +1,8 @@
 package com.shiftlab.crm.controller.ui;
 
+import com.shiftlab.crm.dto.PrimePeriodDto;
 import com.shiftlab.crm.entity.PaymentType;
+import com.shiftlab.crm.entity.Seller;
 import com.shiftlab.crm.service.seller.SellerServiceImpl;
 import com.shiftlab.crm.service.transaction.TransactionServiceImpl;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -8,7 +10,10 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import java.security.Principal;
 
+
+import java.security.Principal;
 import java.time.LocalDateTime;
 
 @Controller
@@ -43,12 +48,25 @@ public class WebViewController {
     }
 
     @GetMapping("/seller/dashboard")
-    public String sellerDashboard(Model model) {
-        Long demoSellerId = 1L;
+    public String sellerDashboard(Model model, Principal principal) {
+        if (principal == null) {
+            return "redirect:/login";
+        }
 
-        model.addAttribute("seller", sellerService.getSellerById(demoSellerId));
-        model.addAttribute("transactions", transactionService.getTransactionsByFilter(demoSellerId, null));
+        String userEmail = principal.getName();
+        Seller currentSeller = sellerService.getSellerByContactInfo(userEmail);
+        Long sellerId = currentSeller.getId();
+
+        model.addAttribute("seller", currentSeller);
+        model.addAttribute("transactions", transactionService.getTransactionsByFilter(sellerId, null));
         model.addAttribute("paymentTypes", PaymentType.values());
+
+        try {
+            PrimePeriodDto primePeriod = transactionService.getPrimePeriodById(sellerId);
+            model.addAttribute("primePeriod", primePeriod);
+        } catch (Exception e) {
+            model.addAttribute("primePeriod", null);
+        }
 
         return "seller_dashboard";
     }

@@ -59,4 +59,9 @@ public class SellerServiceImpl {
     public Seller updateSeller(Long sellerId, SellerCreateDto sellerDto) {
         return sellerUpdater.updateSeller(sellerId, sellerDto);
     }
+
+    public Seller getSellerByContactInfo(String contactInfo) {
+        return sellerRepository.findByContactInfo(contactInfo)
+                .orElseThrow(() -> new RuntimeException("Продавец с email " + contactInfo + " не найден"));
+    }
 }

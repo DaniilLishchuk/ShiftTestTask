@@ -8,6 +8,7 @@ import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 public interface SellerRepository  extends JpaRepository<Seller, Long> {
     @Query("SELECT new com.shiftlab.crm.dto.SellerAnalyticsDto(s.id, s.name, SUM(u.amount), COUNT(u.id)) " +
@@ -29,4 +30,6 @@ public interface SellerRepository  extends JpaRepository<Seller, Long> {
             @Param("dateTo") LocalDateTime dateTo,
             @Param("maxAmount") Double maxAmount
     );
+
+    Optional<Seller> findByContactInfo(String contactInfo);
 }
